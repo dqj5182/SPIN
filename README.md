@@ -82,6 +82,8 @@ ${ROOT}
 
 ## Evaluation
 Before evaluating SPIN model, please prepare 3DPW dataset. </br>
+For preparing the dataset, please contact me personally!
+</br>
 
 
 Please run:
