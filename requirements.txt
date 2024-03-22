@@ -4,12 +4,8 @@ pyopengl
 pyrender
 scikit-image
 scipy
-tensorboard
 smplx
 spacepy
-torch
-torchgeometry
-torchvision
 tqdm
 trimesh
 git+https://github.com/mattloper/chumpy.git

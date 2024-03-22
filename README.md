@@ -7,39 +7,24 @@ ICCV 2019
 
 ![teaser](teaser.png)
 
-##  [<img src="https://i.imgur.com/QCojoJk.png" width="40"> You can run the SPIN demo in Google Colab](https://colab.research.google.com/drive/1uH2JtavOtDrFl6RsipyIncCSr19GWW4x?usp=sharing)
 
 ## Installation instructions
-We suggest to use the [docker image](https://hub.docker.com/r/chaneyk/spin) we provide that has all dependencies
-compiled and preinstalled.
-
-Alternatively you can install locally:
+Start locally:
 ```
-git clone https://github.com/nkolot/SPIN.git
+git clone https://github.com/dqj5182/SPIN.git
 cd SPIN
-git checkout origin/cuda11_fix
 ```
 
-You can create a `python3` virtual environment and install all the relevant dependencies. You can adapt the dependencies based on your CUDA version:
+Create conda environment and install PyTorch and other packages:
 ```
-python3.10 -m venv spin
-source spin/bin/activate
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117
-pip install -r requirements.txt
-```
-
-There is also the option of using a conda environment:
-```
-conda create --name spin python=3.10
+# Initialze conda env
+conda create -n spin python=3.9
 conda activate spin
-conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+
+# Install PyTorch and other packages
+conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=10.2 -c pytorch
 pip install -r requirements.txt
 ```
-
-If you choose to use a virtual environment, please look at the [instructions](https://pyrender.readthedocs.io/en/latest/install/index.html) for installing pyrender. 
-
-After finishing with the installation, you can continue with running the demo/evaluation/training code.
-In case you want to evaluate our approach on Human3.6M, you also need to manually install the [pycdf package of the spacepy library](https://pythonhosted.org/SpacePy/pycdf.html) to process some of the original files. If you face difficulties with the installation, you can find more elaborate instructions [here](https://stackoverflow.com/questions/37232008/how-read-common-data-formatcdf-in-python).
 
 ## Fetch data
 We provide a script to fetch the necessary data for training and evaluation. You need to run:
