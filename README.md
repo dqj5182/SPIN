@@ -84,7 +84,12 @@ ${ROOT}
 Before evaluating SPIN model, please prepare 3DPW dataset. </br>
 
 
-Example usage:
+Please run:
 ```
 python eval.py --checkpoint=data/model_checkpoint.pt --dataset=3dpw --log_freq=20
+```
+The results should be:
+```
+MPJPE: 96.98920413126925
+Reconstruction Error: 59.41015338496593
 ```
