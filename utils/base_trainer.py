@@ -5,7 +5,6 @@ import time
 import torch
 from tqdm import tqdm
 tqdm.monitor_interval = 0
-from torch.utils.tensorboard import SummaryWriter
 
 from utils import CheckpointDataLoader, CheckpointSaver
 
@@ -64,9 +63,6 @@ class BaseTrainer(object):
                     batch = {k: v.to(self.device) if isinstance(v, torch.Tensor) else v for k,v in batch.items()}
                     out = self.train_step(batch)
                     self.step_count += 1
-                    # Tensorboard logging every summary_steps steps
-                    if self.step_count % self.options.summary_steps == 0:
-                        self.train_summaries(batch, *out)
                     # Save checkpoint every checkpoint_steps steps
                     if self.step_count % self.options.checkpoint_steps == 0:
                         self.saver.save_checkpoint(self.models_dict, self.optimizers_dict, epoch, step+1, self.options.batch_size, train_data_loader.sampler.dataset_perm, self.step_count)

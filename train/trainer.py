@@ -265,7 +265,7 @@ class Trainer(BaseTrainer):
         loss.backward()
         self.optimizer.step()
 
-        # Pack output arguments for tensorboard logging
+        # Pack output arguments for logging
         output = {'pred_vertices': pred_vertices.detach(),
                   'opt_vertices': opt_vertices,
                   'pred_cam_t': pred_cam_t.detach(),

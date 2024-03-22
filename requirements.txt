@@ -10,3 +10,5 @@ tqdm
 trimesh
 git+https://github.com/mattloper/chumpy.git
 git+https://github.com/shubham-goel/NMR.git
+torchgeometry
+tensorboard
