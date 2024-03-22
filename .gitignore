@@ -114,6 +114,7 @@ logs/
 *.pyc
 
 # data files
+data
 data/*
 # But not the README
 !data/README.md
