@@ -39,7 +39,8 @@ This provides necessary data for training and evaluation. Please run:
 ./fetch_data.sh
 ```
 
-Please download SMPL human model files: (Google Drive)[https://drive.google.com/drive/folders/1A7c0LsiHo4vznIajx3lCfLGEKHEXDEcD?usp=sharing] </br>
+Please also download SMPL human model files: (Google Drive)[https://drive.google.com/drive/folders/1A7c0LsiHo4vznIajx3lCfLGEKHEXDEcD?usp=sharing] </br>
+Move the file under `data`. </br>
 Note that these files under license.
 
 
