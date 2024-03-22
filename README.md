@@ -26,7 +26,7 @@ conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit
 pip install -r requirements.txt
 ```
 
-If you encounter error like "RuntimeError: The detected CUDA version (11.6) mismatches the version that was used to compile PyTorch (10.2). Please make sure to use the same CUDA versions.":
+* If you encounter error like "RuntimeError: The detected CUDA version (11.6) mismatches the version that was used to compile PyTorch (10.2). Please make sure to use the same CUDA versions.":
 ```
 export PATH=/usr/local/cuda-10.2/bin:/usr/local/cuda-10.2/NsightCompute-2019.1${PATH:+:${PATH}}
 export LD_LIBRARY_PATH=/usr/local/cuda-10.2/lib64\ ${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
@@ -39,9 +39,45 @@ This provides necessary data for training and evaluation. Please run:
 ./fetch_data.sh
 ```
 
-Please also download SMPL human model files: (Google Drive)[https://drive.google.com/drive/folders/1A7c0LsiHo4vznIajx3lCfLGEKHEXDEcD?usp=sharing] </br>
-Move the file under `data`. </br>
+Please also download SMPL human model files from [Google Drive](https://drive.google.com/drive/folders/1A7c0LsiHo4vznIajx3lCfLGEKHEXDEcD?usp=sharing) and move the files under `data`. </br>
 Note that these files under license.
+
+## Data
+You need to follow directory structure of the `data` as below.
+```
+${ROOT} 
+|-- data  
+|   |-- dataset_extras
+|   |   |--3dpw_test.npz
+|   |   |--coco_2014_train.npz
+|   |   |--h36m_valid_protocol1.npz
+|   |   |--h36m_valid_protocol2.npz
+|   |   |--hr-lspet_train.npz
+|   |   |--lsp_dataset_original_train.npz
+|   |   |--lsp_dataset_test.npz
+|   |   |--mpi_inf_3dhp_train.npz
+|   |   |--mpi_inf_3dhp_valid.npy
+|   |   |--mpii_train.npz
+|   |-- static_fits
+|   |   |--coco_fits.npy
+|   |   |--lsp-orig_fits.npy
+|   |   |--lspet_fits.npy
+|   |   |--mpi-inf-3dhp_fits.npy
+|   |   |--mpi-inf-3dhp_mview_fits.npz
+|   |   |--mpii_fits.npy
+|   |-- cube_parts.npy
+|   |-- gmm_08.pkl
+|   |-- J_regressor_extra.npy
+|   |-- J_regressor_h36m.npy
+|   |-- model_checkpoint.pt
+|   |-- README.md
+|   |-- SMPL_FEMALE.pkl
+|   |-- SMPL_MALE.pkl
+|   |-- smpl_mean_params.npz
+|   |-- SMPL_NEUTRAL.pkl
+|   |-- train.h5
+|   |-- vertex_texture.npy
+```
 
 
 ## Final fits
