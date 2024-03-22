@@ -88,10 +88,3 @@ Example usage:
 ```
 python eval.py --checkpoint=data/model_checkpoint.pt --dataset=3dpw --log_freq=20
 ```
-
-
-You can also save the results (predicted SMPL parameters, camera and 3D pose) in a .npz file using ```--result=out.npz```.
-
-For the MPI-INF-3DHP dataset specifically, we include evaluation code only for MPJPE (before and after alignment). If
-you want to evaluate on all metrics reported in the paper you should use the official MATLAB test code provided with the
-dataset together with the saved detections.
