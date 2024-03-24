@@ -18,8 +18,8 @@ import numpy as np
 import argparse
 from tqdm import tqdm
 
-import config
-import constants
+from utils import config
+from utils import constants
 from models import hmr, SMPL
 from datasets import BaseDataset
 from utils.pose_utils import reconstruction_error

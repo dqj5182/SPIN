@@ -5,6 +5,7 @@ import numpy as np
 import math
 from utils.geometry import rot6d_to_rotmat
 
+
 class Bottleneck(nn.Module):
     """ Redefinition of Bottleneck residual block
         Adapted from the official PyTorch implementation
@@ -45,6 +46,7 @@ class Bottleneck(nn.Module):
         out = self.relu(out)
 
         return out
+
 
 class HMR(nn.Module):
     """ SMPL Iterative Regressor with ResNet50 backbone
@@ -91,7 +93,6 @@ class HMR(nn.Module):
         self.register_buffer('init_shape', init_shape)
         self.register_buffer('init_cam', init_cam)
 
-
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None
         if stride != 1 or self.inplanes != planes * block.expansion:
@@ -108,7 +109,6 @@ class HMR(nn.Module):
             layers.append(block(self.inplanes, planes))
 
         return nn.Sequential(*layers)
-
 
     def forward(self, x, init_pose=None, init_shape=None, init_cam=None, n_iter=3):
 
@@ -150,6 +150,7 @@ class HMR(nn.Module):
         pred_rotmat = rot6d_to_rotmat(pred_pose).view(batch_size, 24, 3, 3)
 
         return pred_rotmat, pred_shape, pred_cam
+
 
 def hmr(smpl_mean_params, pretrained=True, **kwargs):
     """ Constructs an HMR model with ResNet50 backbone.

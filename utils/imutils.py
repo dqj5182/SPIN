@@ -5,7 +5,7 @@ import numpy as np
 from skimage.transform import rotate, resize
 import cv2
 
-import constants
+from utils import constants
 
 
 def get_transform(center, scale, res, rot=0):

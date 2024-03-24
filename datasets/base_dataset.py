@@ -7,8 +7,8 @@ import numpy as np
 import cv2
 from os.path import join
 
-import config
-import constants
+from utils import config
+from utils import constants
 from utils.imutils import crop, flip_kp, transform, rot_aa
 
 

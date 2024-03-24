@@ -1,12 +1,11 @@
 import torch
 import numpy as np
-import smplx
 from smplx import SMPL as _SMPL
 from smplx.body_models import SMPLOutput
 from smplx.lbs import vertices2joints
 
-import config
-import constants
+from utils import config
+from utils import constants
 
 class SMPL(_SMPL):
     """ Extension of the official SMPL implementation to support more joints """

@@ -65,9 +65,6 @@ JOINT_NAMES = [
 'Right Ear'
 ]
 
-# Dict containing the joints in numerical order
-JOINT_IDS = {JOINT_NAMES[i]: i for i in range(len(JOINT_NAMES))}
-
 # Map joints to SMPL joints
 JOINT_MAP = {
 'OP Nose': 24, 'OP Neck': 12, 'OP RShoulder': 17,
