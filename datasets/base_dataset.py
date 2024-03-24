@@ -93,26 +93,6 @@ class BaseDataset(Dataset):
         pn = np.ones(3)  # per channel pixel-noise
         rot = 0            # rotation
         sc = 1            # scaling
-        if self.is_train:
-            # We flip with probability 1/2
-            if np.random.uniform() <= 0.5:
-                flip = 1
-            
-            # Each channel is multiplied with a number 
-            # in the area [1-opt.noiseFactor,1+opt.noiseFactor]
-            pn = np.random.uniform(1-self.options.noise_factor, 1+self.options.noise_factor, 3)
-            
-            # The rotation is a number in the area [-2*rotFactor, 2*rotFactor]
-            rot = min(2*self.options.rot_factor,
-                    max(-2*self.options.rot_factor, np.random.randn()*self.options.rot_factor))
-            
-            # The scale is multiplied with a number
-            # in the area [1-scaleFactor,1+scaleFactor]
-            sc = min(1+self.options.scale_factor,
-                    max(1-self.options.scale_factor, np.random.randn()*self.options.scale_factor+1))
-            # but it is zero with probability 3/5
-            if np.random.uniform() <= 0.6:
-                rot = 0
         
         return flip, pn, rot, sc
 
@@ -120,9 +100,6 @@ class BaseDataset(Dataset):
         """Process rgb image and do augmentation."""
         rgb_img = crop(rgb_img, center, scale, 
                       [constants.IMG_RES, constants.IMG_RES], rot=rot)
-        # flip the image 
-        if flip:
-            rgb_img = flip_img(rgb_img)
         # in the rgb image we add pixel noise in a channel-wise manner
         rgb_img[:,:,0] = np.minimum(255.0, np.maximum(0.0, rgb_img[:,:,0]*pn[0]))
         rgb_img[:,:,1] = np.minimum(255.0, np.maximum(0.0, rgb_img[:,:,1]*pn[1]))
