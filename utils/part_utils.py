@@ -5,6 +5,7 @@ import config
 
 from models import SMPL
 
+
 class PartRenderer():
     """Renderer used to render segmentation masks and part segmentations.
     Internally it uses the Neural 3D Mesh Renderer
