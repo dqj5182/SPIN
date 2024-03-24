@@ -18,8 +18,6 @@ import numpy as np
 import cv2
 import os
 import argparse
-import json
-from collections import namedtuple
 from tqdm import tqdm
 import torchgeometry as tgm
 
@@ -31,6 +29,7 @@ from utils.imutils import uncrop
 from utils.pose_utils import reconstruction_error
 from utils.part_utils import PartRenderer
 
+
 # Define command-line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--checkpoint', default=None, help='Path to network checkpoint')
@@ -40,6 +39,7 @@ parser.add_argument('--batch_size', default=32, help='Batch size for testing')
 parser.add_argument('--shuffle', default=False, action='store_true', help='Shuffle data')
 parser.add_argument('--num_workers', default=8, type=int, help='Number of processes for data loading')
 parser.add_argument('--result_file', default=None, help='If set, save detections to a .npz file')
+
 
 def run_evaluation(model, dataset_name, dataset, result_file,
                    batch_size=32, img_res=224, 

@@ -5,7 +5,7 @@ Code repository for the paper:
 ICCV 2019  
 [[paper](https://openaccess.thecvf.com/content_ICCV_2019/papers/Kolotouros_Learning_to_Reconstruct_3D_Human_Pose_and_Shape_via_Model-Fitting_ICCV_2019_paper.pdf)] [[project page](https://www.nikoskolot.com/projects/spin/)]
 
-![teaser](teaser.png)
+![teaser](assets/teaser.png)
 
 
 ## Installation instructions
