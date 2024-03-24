@@ -9,7 +9,8 @@ from os.path import join
 
 import config
 import constants
-from utils.imutils import crop, flip_img, flip_pose, flip_kp, transform, rot_aa
+from utils.imutils import crop, flip_kp, transform, rot_aa
+
 
 class BaseDataset(Dataset):
     """
@@ -96,7 +97,7 @@ class BaseDataset(Dataset):
         
         return flip, pn, rot, sc
 
-    def rgb_processing(self, rgb_img, center, scale, rot, flip, pn):
+    def rgb_processing(self, rgb_img, center, scale, rot, pn):
         """Process rgb image and do augmentation."""
         rgb_img = crop(rgb_img, center, scale, 
                       [constants.IMG_RES, constants.IMG_RES], rot=rot)
@@ -108,7 +109,7 @@ class BaseDataset(Dataset):
         rgb_img = np.transpose(rgb_img.astype('float32'),(2,0,1))/255.0
         return rgb_img
 
-    def j2d_processing(self, kp, center, scale, r, f):
+    def j2d_processing(self, kp, center, scale, r):
         """Process gt 2D keypoints and apply all augmentation transforms."""
         nparts = kp.shape[0]
         for i in range(nparts):
@@ -116,9 +117,6 @@ class BaseDataset(Dataset):
                                   [constants.IMG_RES, constants.IMG_RES], rot=r)
         # convert to normalized coordinates
         kp[:,:-1] = 2.*kp[:,:-1]/constants.IMG_RES - 1.
-        # flip the x coordinates
-        if f:
-             kp = flip_kp(kp)
         kp = kp.astype('float32')
         return kp
 
@@ -138,13 +136,10 @@ class BaseDataset(Dataset):
         S = S.astype('float32')
         return S
 
-    def pose_processing(self, pose, r, f):
+    def pose_processing(self, pose, r):
         """Process SMPL theta parameters  and apply all augmentation transforms."""
         # rotation or the pose parameters
         pose[:3] = rot_aa(pose[:3], r)
-        # flip the pose parameters
-        if f:
-            pose = flip_pose(pose)
         # (72),float
         pose = pose.astype('float32')
         return pose
@@ -174,11 +169,11 @@ class BaseDataset(Dataset):
             betas = np.zeros(10)
 
         # Process image
-        img = self.rgb_processing(img, center, sc*scale, rot, flip, pn)
+        img = self.rgb_processing(img, center, sc*scale, rot, pn)
         img = torch.from_numpy(img).float()
         # Store image before normalization to use it in visualization
         item['img'] = self.normalize_img(img)
-        item['pose'] = torch.from_numpy(self.pose_processing(pose, rot, flip)).float()
+        item['pose'] = torch.from_numpy(self.pose_processing(pose, rot)).float()
         item['betas'] = torch.from_numpy(betas).float()
         item['imgname'] = imgname
 
@@ -191,7 +186,7 @@ class BaseDataset(Dataset):
 
         # Get 2D keypoints and apply augmentation transforms
         keypoints = self.keypoints[index].copy()
-        item['keypoints'] = torch.from_numpy(self.j2d_processing(keypoints, center, sc*scale, rot, flip)).float()
+        item['keypoints'] = torch.from_numpy(self.j2d_processing(keypoints, center, sc*scale, rot)).float()
 
         item['has_smpl'] = self.has_smpl[index]
         item['has_pose_3d'] = self.has_pose_3d

@@ -96,14 +96,6 @@ def rot_aa(aa, rot):
     return aa
 
 
-def flip_img(img):
-    """Flip rgb images or masks.
-    channels come last, e.g. (256,256,3).
-    """
-    img = np.fliplr(img)
-    return img
-
-
 def flip_kp(kp):
     """Flip keypoints."""
     if len(kp) == 24:
@@ -113,15 +105,3 @@ def flip_kp(kp):
     kp = kp[flipped_parts]
     kp[:,0] = - kp[:,0]
     return kp
-
-
-def flip_pose(pose):
-    """Flip pose.
-    The flipping is based on SMPL parameters.
-    """
-    flipped_parts = constants.SMPL_POSE_FLIP_PERM
-    pose = pose[flipped_parts]
-    # we also negate the second and the third dimension of the axis-angle
-    pose[1::3] = -pose[1::3]
-    pose[2::3] = -pose[2::3]
-    return pose
