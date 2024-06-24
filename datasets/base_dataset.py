@@ -4,12 +4,15 @@ import torch
 from torch.utils.data import Dataset
 from torchvision.transforms import Normalize
 import numpy as np
+import os
 import cv2
+import copy
 from os.path import join
 
 from utils import config
 from utils import constants
 from utils.imutils import crop, flip_kp, transform, rot_aa
+from utils.vis_utils import vis_bbox
 
 
 class BaseDataset(Dataset):
@@ -101,13 +104,14 @@ class BaseDataset(Dataset):
         """Process rgb image and do augmentation."""
         rgb_img = crop(rgb_img, center, scale, 
                       [constants.IMG_RES, constants.IMG_RES], rot=rot)
+        orig_rgb_img = copy.deepcopy(rgb_img)
         # in the rgb image we add pixel noise in a channel-wise manner
         rgb_img[:,:,0] = np.minimum(255.0, np.maximum(0.0, rgb_img[:,:,0]*pn[0]))
         rgb_img[:,:,1] = np.minimum(255.0, np.maximum(0.0, rgb_img[:,:,1]*pn[1]))
         rgb_img[:,:,2] = np.minimum(255.0, np.maximum(0.0, rgb_img[:,:,2]*pn[2]))
         # (3,224,224),float,[0,1]
         rgb_img = np.transpose(rgb_img.astype('float32'),(2,0,1))/255.0
-        return rgb_img
+        return orig_rgb_img, rgb_img
 
     def j2d_processing(self, kp, center, scale, r):
         """Process gt 2D keypoints and apply all augmentation transforms."""
@@ -155,10 +159,10 @@ class BaseDataset(Dataset):
         # Load image
         imgname = join(self.img_dir, self.imgname[index])
         try:
-            img = cv2.imread(imgname)[:,:,::-1].copy().astype(np.float32)
+            orig_img = cv2.imread(imgname)[:,:,::-1].copy().astype(np.float32)
         except TypeError:
             print(imgname)
-        orig_shape = np.array(img.shape)[:2]
+        orig_shape = np.array(orig_img.shape)[:2]
 
         # Get SMPL parameters, if available
         if self.has_smpl[index]:
@@ -168,14 +172,79 @@ class BaseDataset(Dataset):
             pose = np.zeros(72)
             betas = np.zeros(10)
 
+        # # Get part-segmentation
+        # from models import SMPL
+
+        # smpl_male = SMPL(config.SMPL_MODEL_DIR,
+        #              gender='male',
+        #              create_transl=False)
+        # smpl_female = SMPL(config.SMPL_MODEL_DIR,
+        #                 gender='female',
+        #                 create_transl=False)
+        
+        # if self.data['gender'][index] == 'm':
+        #     verts = smpl_male(global_orient=torch.Tensor(pose[None, ...][:, :3]), body_pose=torch.Tensor(pose[None, ...][:, 3:]), betas=torch.Tensor(betas[None, ...])).vertices
+        # elif self.data['gender'][index] == 'f':
+        #     verts = smpl_female(global_orient=torch.Tensor(pose[None, ...][:, :3]), body_pose=torch.Tensor(pose[None, ...][:, 3:]), betas=torch.Tensor(betas[None, ...])).vertices
+        # else:
+        #     import pdb; pdb.set_trace()
+
+        
+        # import pdb; pdb.set_trace()
+        # cv2.imwrite('debug.png', orig_img[:,:,::-1])
+
+
         # Process image
-        img = self.rgb_processing(img, center, sc*scale, rot, pn)
-        img = torch.from_numpy(img).float()
+        orig_crop_img, img = self.rgb_processing(orig_img, center, sc*scale, rot, pn)
+
+
+        # Face detection and alignment
+        face_imgname = imgname.replace('/imageFiles/', '/faceFiles/')
+        face_foldername = face_imgname.replace('/' + face_imgname.split('/')[-1], '')
+        face_orig_foldername = os.path.join(face_foldername, 'orig_img')
+        face_crop_foldername = os.path.join(face_foldername, 'crop_img')
+        face_bbox_foldername = os.path.join(face_foldername, 'face_bbox')
+        face_occ_foldername = os.path.join(face_foldername, 'face_occ_img')
+
+        if not os.path.exists(face_foldername):
+            os.makedirs(face_foldername)
+            os.makedirs(face_orig_foldername)
+            os.makedirs(face_crop_foldername)
+            os.makedirs(face_bbox_foldername)
+            os.makedirs(face_occ_foldername)
+
+        # cv2.imwrite(os.path.join(face_orig_foldername, imgname.split('/')[-1]), orig_img[:,:,::-1])
+        # cv2.imwrite(os.path.join(face_crop_foldername, imgname.split('/')[-1]), orig_crop_img[:,:,::-1])
+
+
+
+        # Read from face occlusion
+        face_det_type = 'all' # ['top1', 'all']
+
+        if face_det_type == 'top1':
+            face_occ_img_path = os.path.join(face_foldername, 'face_occ_img', imgname.split('/')[-1])
+        elif face_det_type == 'all':
+            face_occ_img_path = os.path.join(face_foldername, 'face_occ_all_img', imgname.split('/')[-1])
+        else:
+            import pdb; pdb.set_trace()
+            
+        face_occ_img = cv2.imread(face_occ_img_path)
+        face_occ_img = (face_occ_img/255)[:,:,::-1]
+        face_occ_img = np.transpose(face_occ_img, (2, 0, 1))
+        img = face_occ_img.copy()
+        # import pdb; pdb.set_trace()
+
+        # cv2.imwrite('debug.png', np.transpose(img, (1, 2, 0))[:,:,::-1]*255)
+        # cv2.imwrite('debug.png', np.transpose(face_occ_img, (1, 2, 0))[:,:,::-1]*255)
+
+
         # Store image before normalization to use it in visualization
+        img = torch.from_numpy(img).float()
         item['img'] = self.normalize_img(img)
         item['pose'] = torch.from_numpy(self.pose_processing(pose, rot)).float()
         item['betas'] = torch.from_numpy(betas).float()
         item['imgname'] = imgname
+
 
         # Get 3D pose, if available
         if self.has_pose_3d:

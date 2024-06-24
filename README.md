@@ -24,6 +24,12 @@ conda activate spin
 # Install PyTorch and other packages
 conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=10.2 -c pytorch
 pip install -r requirements.txt
+
+pip install tensorrt
+
+# Install face detection
+pip install deepface
+pip install facenet-pytorch
 ```
 
 * If you encounter error like "RuntimeError: The detected CUDA version (11.6) mismatches the version that was used to compile PyTorch (10.2). Please make sure to use the same CUDA versions.":
@@ -93,5 +99,5 @@ python eval.py --checkpoint=data/model_checkpoint.pt --dataset=3dpw --log_freq=2
 The results should be:
 ```
 MPJPE: 96.98920413126925
-Reconstruction Error: 59.41015338496593
+Reconstruction Error (PA-MPJPE): 59.41015338496593
 ```
